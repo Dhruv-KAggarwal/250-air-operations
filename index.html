@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Civitas AirOps | Air Mission Planner</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="/styles.css" />
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail">
+      <div class="crest">✦</div>
+      <div class="brand">SKYWEAVE AI <small>ADAPTIVE AVIATION OPERATIONS INTELLIGENCE</small></div>
+      <div class="live-pill"><i></i> LIVE SIMULATION</div>
+      <nav>
+        <button class="nav active" data-view="overview">◉<span>Common operating picture</span></button>
+        <button class="nav" data-view="fleet">✈<span>Fleet & crew</span></button>
+        <button class="nav" data-view="planner">☷<span>Mission planner</span></button>
+        <button class="nav" data-view="weather">◌<span>Weather intelligence</span></button>
+        <button class="nav" data-view="analytics">▥<span>Reports & analytics</span></button>
+        <button class="nav" data-view="decisions">☷<span>Decision ledger</span></button>
+      </nav>
+      <div class="rail-bottom"><span class="mono">NAVIC / BHUVAN MAP ADAPTER</span><b>INDIA RESPONSE CELL</b><small>Secure planning environment · IST</small></div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div><div class="eyebrow">NATIONAL HUMANITARIAN AIR NETWORK · 12 OCT 2026</div><h1 id="pageTitle">Air operations mission planner <em>●</em></h1><p>One operational picture for aircraft, airspace, weather and mission readiness.</p></div>
+        <div class="top-actions"><span id="liveClock" class="clock">15:19:44 IST</span><span class="system-state"><i></i> Systems nominal</span><button class="button ghost" id="resetBtn">↺ Reset</button><button class="button" id="addMissionBtn">＋ Add mission</button><button class="button primary" id="shockwaveBtn">⚡ Mission shockwave</button></div>
+      </header>
+
+      <section id="view-overview" class="view active-view">
+        <div class="kpis" id="metrics"></div>
+        <div class="dashboard-grid">
+          <section class="panel map-panel">
+            <div class="panel-head"><div><span class="eyebrow">COMMON OPERATING PICTURE</span><h2>India airspace & mission network</h2></div><span class="connection"><i></i> WebSocket synced</span></div>
+            <div class="map-tabs"><button class="map-tab active">Map view</button><button class="map-tab">Airspace</button><button class="map-tab">Weather radar</button><button class="map-tab">Airfields</button><button class="map-tab">Layers</button><span class="map-tools"><button id="fitMap">⌖</button><button id="locateMap">＋</button></span></div>
+            <div id="opsMap" class="ops-map"></div>
+            <div class="map-legend"><span><i class="legend-dot cyan"></i>Aircraft</span><span><i class="legend-line"></i>Mission route</span><span><i class="legend-dot amber"></i>Weather watch</span><span><i class="legend-dot red"></i>Restricted zone</span><b id="networkFlights">0 active missions</b><small>Bhuvan / NAVIC base layer</small></div>
+          </section>
+          <section class="right-stack">
+            <div class="panel missions-panel">            <div class="panel-head"><div><span class="eyebrow">LIVE SORTIE BOARD</span><h2>Active missions</h2></div><button class="text-button" data-view-jump="planner">Manage →</button></div><div class="mission-filter"><input id="missionSearch" placeholder="Search missions…"><b>All <small id="missionTotal">0</small></b><span>High <small id="missionHigh">0</small></span></div><div id="missionTable"></div></div>
+            <div class="panel weather-panel"><div class="panel-head"><div><span class="eyebrow">WEATHER & AIRSPACE STATUS</span><h2 id="weatherSource">Loading feed…</h2></div><button class="text-button" data-view-jump="weather">View layers →</button></div><div class="weather-summary"><div class="weather-temp" id="weatherTemp">--°</div><div><b id="weatherCondition">Central India</b><small id="weatherMeta">Public forecast adapter</small></div></div><div id="weatherGrid" class="weather-grid"></div><div id="weatherImplications" class="mini-alert"></div></div>
+          </section>
+        </div>
+        <div class="lower-grid">
+          <section class="panel fleet-panel"><div class="panel-head"><div><span class="eyebrow">FLEET AVAILABILITY</span><h2>Readiness by aircraft type</h2></div><span class="status-chip" id="fleetReady">-- ready</span></div><div class="readiness"><div class="donut" id="fleetDonut"><strong>--</strong><small>ready</small></div><div id="fleetBars"></div></div></section>
+          <section class="panel timeline-panel"><div class="panel-head"><div><span class="eyebrow">MISSION TIMELINE</span><h2>Next 12 hours</h2></div><span class="connection">NOW · LIVE</span></div><div class="timeline-axis"><span>16:00</span><span>18:00</span><span>20:00</span><span>22:00</span><span>00:00</span></div><div id="timeline"></div></section>
+          <section class="panel signals-panel"><div class="panel-head"><div><span class="eyebrow">SKYWEAVE COPILOT</span><h2>Decision support</h2></div><span class="beta">TRACEABLE</span></div><div id="signalList"></div><div class="copilot-row"><input id="copilotQuestion" placeholder="Ask about risks or bottlenecks…"><button class="button" id="copilotAsk">Ask</button></div><div id="copilotAnswer" class="copilot-answer"></div><button class="button primary wide" id="shockwaveBtn2">Open mission scenario lab</button></section>
+        </div>
+      </section>
+
+      <section id="view-fleet" class="view"><div class="page-intro page-actions"><div><span class="eyebrow">ASSET INTELLIGENCE</span><h2>Fleet & crew readiness</h2><p>Aircraft health, maintenance reports and dispatch capacity for the current operating picture.</p></div><div><button class="button primary" id="addAircraftBtn">＋ Add aircraft</button><button class="button" id="addCrewBtn">＋ Add crew</button></div></div><div class="content-grid"><div class="panel table-panel"><div class="panel-head"><h2>Tracked aircraft</h2><span id="fleetCount"></span></div><div id="fleetTable"></div></div><div class="panel table-panel"><div class="panel-head"><h2>Operator reports</h2><span class="connection">PERSISTED</span></div><div id="reportList"></div><div class="panel-head"><h2>Crew roster</h2><span id="crewCount"></span></div><div id="crewTable"></div></div></div></section>
+      <section id="view-planner" class="view"><div class="page-intro page-actions"><div><span class="eyebrow">MISSION PLANNER</span><h2>Schedule workspace</h2><p>Search missions, inspect feasibility and compare alternative schedules before approval.</p></div><button class="button primary" id="plannerAddMission">＋ Add mission</button></div><div class="panel table-panel"><div id="plannerTable"></div></div><div class="panel comparison-panel"><div class="panel-head"><div><span class="eyebrow">COUNTERFACTUAL PLANS</span><h2>Baseline vs alternatives</h2></div><button class="button" id="comparePlans">Compare plans</button></div><div id="comparisonResult" class="comparison-result">Run a comparison against the current canonical state.</div></div></section>
+      <section id="view-analytics" class="view"><div class="page-intro"><span class="eyebrow">REPORTS & ANALYTICS</span><h2>Operational performance</h2><p>Metrics below are derived from the current synthetic scenario and optimiser outcomes.</p></div><div class="kpis" id="analyticsKpis"></div><div class="panel table-panel"><div class="panel-head"><h2>Data-source health</h2><span class="connection">SIMULATION ENVIRONMENT</span></div><div id="sourceHealth"></div></div></section>
+      <section id="view-weather" class="view"><div class="page-intro"><span class="eyebrow">WEATHER INTELLIGENCE</span><h2>Conditions for mission planning</h2><p>Compare weather across the complete corridor and see where a route should be reviewed or avoided.</p></div><div class="panel route-planner"><div class="panel-head"><div><span class="eyebrow">ROUTE WEATHER SCAN</span><h2>Search weather along a mission route</h2></div><span class="connection">3 POINT CORRIDOR CHECK</span></div><div class="route-controls"><select id="routeOrigin"></select><span>→</span><select id="routeDestination"></select><button class="button primary" id="scanRouteBtn">Scan route weather</button></div><div id="routeResult" class="route-result">Select an origin and destination to inspect wind, visibility and precipitation along the route.</div></div><div class="content-grid"><div class="panel weather-detail"><div class="weather-temp" id="weatherTempDetail">--°</div><h2 id="weatherSourceDetail">Loading…</h2><div id="weatherGridDetail" class="weather-grid"></div></div><div class="panel table-panel"><div class="panel-head"><h2>Planning implications</h2><span class="connection">DERIVED</span></div><div id="weatherImplicationsDetail"></div></div></div></section>
+      <section id="view-decisions" class="view"><div class="page-intro"><span class="eyebrow">ACCOUNTABILITY</span><h2>Decision ledger</h2><p>Append-only record of disruptions, solver proposals and operator decisions.</p></div><div class="panel table-panel"><div class="panel-head"><h2>Recent decisions</h2><span class="connection">SQLITE PERSISTED</span></div><div id="ledgerTable"></div></div></section>
+    </main>
+  </div>
+  <div class="modal" id="shockModal"><div class="modal-box"><button class="modal-close" id="closeModal">×</button><span class="eyebrow amber-text">SCENARIO LAB / CONTROLLED DISRUPTION</span><h2>What changes if a hub closes?</h2><p>Inject a closure, inspect affected missions, then generate a solver proposal before approval.</p><label>Relief hub</label><select id="airportSelect"></select><label>Strategy</label><select id="modeSelect"><option value="priority">Protect priority missions</option><option value="minimum-change">Minimum change</option></select><button class="button primary wide" id="injectBtn">Inject disruption →</button><div id="proposalActions" class="hidden"><div id="proposalSummary" class="proposal-summary"></div><button class="button primary wide" id="optimizeBtn">Run OR-Tools optimiser</button><div class="action-row"><button class="button approve" id="approveBtn">Approve plan</button><button class="button reject" id="rejectBtn">Reject</button></div></div></div></div>
+  <div class="modal" id="manageModal"><div class="modal-box"><button class="modal-close" id="closeManageModal">×</button><span class="eyebrow">PLANNING DATA MANAGEMENT</span><h2 id="manageTitle">Add mission</h2><form id="manageForm"></form></div></div>
+  <div id="toast" class="toast"></div>
+</body>
+</html>
